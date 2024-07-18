@@ -1,0 +1,70 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: my-restapi-project
+build:
+  local:
+    push: false
+  artifacts:
+    - image: restapi-dev
+      context: backend
+      docker:
+        dockerfile: Dockerfile
+        target: development
+      sync:
+        infer: []
+    - image: restapi-prod
+      context: backend
+      docker:
+        dockerfile: Dockerfile
+        target: production
+      sync:
+        infer: []
+deploy:
+  helm:
+    releases:
+      - name: restapi-app
+        chartPath: charts/restapi-app
+        valuesFiles:
+          - charts/restapi-app/values.yaml
+        setValues:
+          backend.image: restapi-prod:latest
+          hpa.enabled: true
+
+profiles:
+  - name: dev
+    build:
+      artifacts:
+        - image: restapi-dev
+          context: backend
+          docker:
+            dockerfile: Dockerfile
+            target: development
+    deploy:
+      helm:
+        releases:
+          - name: restapi-app
+            chartPath: charts/restapi-app
+            valuesFiles:
+              - charts/restapi-app/values.yaml
+            setValues:
+              backend.image: restapi-dev:latest
+              hpa.enabled: false
+  - name: prod
+    build:
+      artifacts:
+        - image: restapi-prod
+          context: backend
+          docker:
+            dockerfile: Dockerfile
+            target: production
+    deploy:
+      helm:
+        releases:
+          - name: restapi-app
+            chartPath: charts/restapi-app
+            valuesFiles:
+              - charts/restapi-app/values.yaml
+            setValues:
+              backend.image: restapi-prod:latest
+              hpa.enabled: true
