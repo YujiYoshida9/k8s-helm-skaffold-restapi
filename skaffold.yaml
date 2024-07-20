@@ -26,10 +26,9 @@ deploy:
       - name: restapi-app
         chartPath: charts/restapi-app
         valuesFiles:
-          - charts/restapi-app/values.yaml
+          - charts/restapi-app/values.yaml  # common valuesFile
         setValues:
-          backend.image: restapi-prod:latest
-          hpa.enabled: true
+          hpa.enabled: true  # common settins
 
 profiles:
   - name: dev
@@ -45,11 +44,10 @@ profiles:
         releases:
           - name: restapi-app
             chartPath: charts/restapi-app
-            valuesFiles:
-              - charts/restapi-app/values.yaml
             setValues:
-              backend.image: restapi-dev:latest
-              hpa.enabled: false
+              backend.image: restapi-dev:latest  # Changing settings for each profile
+              hpa.enabled: false 
+
   - name: prod
     build:
       artifacts:
@@ -63,8 +61,6 @@ profiles:
         releases:
           - name: restapi-app
             chartPath: charts/restapi-app
-            valuesFiles:
-              - charts/restapi-app/values.yaml
             setValues:
-              backend.image: restapi-prod:latest
-              hpa.enabled: true
+              backend.image: restapi-prod:latest  # Changing settings for each profile
+              hpa.enabled: true  
