@@ -1,0 +1,14 @@
+replicaCount: 1
+
+backend:
+  image: restapi-prod:latest
+
+service:
+  type: ClusterIP
+  port: 8000
+
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80

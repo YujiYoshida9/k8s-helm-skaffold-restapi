@@ -42,11 +42,17 @@ profiles:
     deploy:
       helm:
         releases:
-          - name: restapi-app
+          - name: restapi-app-dev
             chartPath: charts/restapi-app
             setValues:
               backend.image: restapi-dev:latest  # Changing settings for each profile
               hpa.enabled: false 
+    portForward:
+    - resourceType: service
+      resourceName: restapi-app-dev-restapi-app
+      port: 8000
+      localPort: 8000
+      namespace: default      
 
   - name: prod
     build:
@@ -59,7 +65,7 @@ profiles:
     deploy:
       helm:
         releases:
-          - name: restapi-app
+          - name: restapi-app-prod
             chartPath: charts/restapi-app
             setValues:
               backend.image: restapi-prod:latest  # Changing settings for each profile
