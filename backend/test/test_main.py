@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from ..main import app, items, Item  # 相対インポートを使用
+from ..main import app, items, Item  
 
 
 @pytest.fixture(scope="module")
